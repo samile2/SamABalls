@@ -1,0 +1,113 @@
+```gitignore
+# ==========================
+# ESP-IDF build files
+# ==========================
+
+build/
+sdkconfig.old
+sdkconfig.backup
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+compile_commands.json
+compile_commands.json.tmp
+git add .
+# Ninja build files
+.ninja_deps
+.ninja_log
+
+
+# ==========================
+# ESP-IDF generated folders
+# ==========================
+
+managed_components/
+dependencies.lock
+
+# Bootloader / partition generated binaries
+*.bin
+*.elf
+*.map
+
+
+# ==========================
+# Flash / monitor files
+# ==========================
+
+*.csv~
+*.bin~
+*.elf~
+*.map~
+*.hex
+
+
+# ==========================
+# VS Code
+# ==========================
+
+.vscode/.ropeproject/
+.vscode/settings.json
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+
+# Garder éventuellement les extensions recommandées
+!.vscode/extensions.json
+
+# VS Code workspace
+*.code-workspace
+
+
+# ==========================
+# Python / ESP-IDF tools
+# ==========================
+
+__pycache__/
+*.py[cod]
+
+.venv/
+venv/
+
+# ESP-IDF Python environment (si dans le projet)
+idf-env/
+
+
+# ==========================
+# OS files
+# ==========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+
+# ==========================
+# Temporary files
+# ==========================
+
+*.tmp
+*.bak
+*.swp
+*~
+
+
+# ==========================
+# Logs
+# ==========================
+
+*.log
+
+
+# ==========================
+# Keep important ESP-IDF files
+# ==========================
+
+!sdkconfig
+!sdkconfig.defaults
+!CMakeLists.txt
+!main/CMakeLists.txt
+```
