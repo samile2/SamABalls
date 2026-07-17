@@ -16,13 +16,13 @@ void drawSpriteMasked(
     const uint8_t *mask,
     int w,
     int h,
-	int IMG_WIDTH);
+	int LCD_WIDTH);
 	
-void lcd_draw(uint16_t *framebuffer,int IMG_WIDTH, int IMG_HEIGHT);
+void lcd_draw(uint16_t *framebuffer,int LCD_WIDTH, int LCD_HEIGHT);
 
 void init_lcd_vars(
-	int IMG_WIDTH,
-	int IMG_HEIGHT,
+	int LCD_WIDTH,
+	int LCD_HEIGHT,
     uint16_t *x_pos,
     uint16_t *y_pos,
     uint16_t *framebuffer_index,

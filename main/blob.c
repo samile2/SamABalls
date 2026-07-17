@@ -46,6 +46,7 @@ void blob_init(
     x_max=xmax;
     y_min=ymin;
     y_max=ymax;
+    srand(esp_random());
 }
 
 Point getBlobPosition(float t)

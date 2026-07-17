@@ -5,8 +5,8 @@
 #include "blob.h"
 #include "init_lcd.h"
 
-#define IMG_WIDTH 240
-#define IMG_HEIGHT 240
+#define LCD_WIDTH 240
+#define LCD_HEIGHT 240
 
 
 uint16_t x_pos;
@@ -21,9 +21,9 @@ uint16_t y_center;
 int64_t initial_time;
 float time,t=0;
 
-static uint16_t framebuffer01[IMG_WIDTH * IMG_HEIGHT];
-static uint16_t framebuffer02[IMG_WIDTH * IMG_HEIGHT];
-static uint16_t framebuffer03[IMG_WIDTH * IMG_HEIGHT];
+static uint16_t framebuffer01[LCD_WIDTH * LCD_HEIGHT];
+static uint16_t framebuffer02[LCD_WIDTH * LCD_HEIGHT];
+static uint16_t framebuffer03[LCD_WIDTH * LCD_HEIGHT];
 static uint16_t * framebuffers[] = {framebuffer01, framebuffer02, framebuffer03};
 
 
@@ -31,10 +31,12 @@ void app_main(void)
 {
 	const uint8_t num_of_framebuffer=sizeof(framebuffers)/sizeof(framebuffers[0]);
 	float max_display_time=30.0f;
-    init_lcd_vars(IMG_WIDTH,IMG_HEIGHT,&x_pos, &y_pos, &framebuffer_index, &x_min, &x_max, &y_min, &y_max, &x_center, &y_center);
+	const int64_t frameTimeUs = 25000;
+
+    init_lcd_vars(LCD_WIDTH,LCD_HEIGHT,&x_pos, &y_pos, &framebuffer_index, &x_min, &x_max, &y_min, &y_max, &x_center, &y_center);
 	lcd_init();
 	
-	init_frame_buffers(framebuffers, num_of_framebuffer,IMG_WIDTH, IMG_HEIGHT);
+	init_frame_buffers(framebuffers, num_of_framebuffer,LCD_WIDTH, LCD_HEIGHT);
 	blob_init(x_min,x_max,y_min,y_max);
 	max_display_time=switchBlob(RANDOM_BLOB_FORMULA);
 	
@@ -47,10 +49,11 @@ void app_main(void)
 	initial_time=esp_timer_get_time();
 	while (1)
     {
-        
+        int64_t start = esp_timer_get_time();
+
 		if(t>max_display_time){
 			initial_time=esp_timer_get_time();
-			init_frame_buffers(framebuffers, num_of_framebuffer, IMG_WIDTH, IMG_HEIGHT);
+			init_frame_buffers(framebuffers, num_of_framebuffer, LCD_WIDTH, LCD_HEIGHT);
 			max_display_time=switchBlob(RANDOM_BLOB_FORMULA);
 		}
 		
@@ -59,8 +62,7 @@ void app_main(void)
 		time=us-initial_time;
 		t = time / 1000000.0f; // secondes
 		
-		ESP_LOGI("DEBUG", "time t : %.3f\n",t);
-		
+		//ESP_LOGI("DEBUG", "time t : %.3f\n",t);
 		
 		Point pos = getBlobPosition(t);
 		x_pos = pos.x;
@@ -81,22 +83,23 @@ void app_main(void)
             amigaballMASK48x48,
             AMIGABALLMASK48X48_WIDTH,
             AMIGABALLMASK48X48_HEIGHT,
-			IMG_WIDTH
+			LCD_WIDTH
         );   
 
-
         // Draw image on screen
-        lcd_draw(framebuffers[framebuffer_index], IMG_WIDTH, IMG_HEIGHT);
+        lcd_draw(framebuffers[framebuffer_index], LCD_WIDTH, LCD_HEIGHT);
  
         framebuffer_index+=1;
         framebuffer_index%=sizeof(framebuffers)/sizeof(framebuffers[0]);
-        /*
-		ESP_LOGI("DEBUG", "framebuffer_index : %d\n",framebuffer_index);
-        ESP_LOGI("DEBUG", "x_pos : %d\n",x_pos);
-        ESP_LOGI("DEBUG", "y_pos : %d\n",y_pos);
-		*/
 
         // Wait a moment please
-        vTaskDelay(pdMS_TO_TICKS(10));
+		int64_t elapsed = esp_timer_get_time() - start;
+		int64_t remaining = frameTimeUs - elapsed;
+		if (remaining > 1000) {
+			vTaskDelay(pdMS_TO_TICKS(remaining / 1000));
+		}
+		while ((esp_timer_get_time() - start) < frameTimeUs) {
+			// Attente active pour finir précisément à 25 ms
+		}
     }
 }

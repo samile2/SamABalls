@@ -31,7 +31,7 @@ void drawSpriteMasked(
     const uint8_t *mask,
     int w,
     int h,
-	int IMG_WIDTH)
+	int LCD_WIDTH)
 {
     int bytesPerLine = (w + 7) / 8;
 
@@ -43,29 +43,29 @@ void drawSpriteMasked(
         {
             if (m[x >> 3] & (0x80 >> (x & 7)))
             {
-                fb[(dstY + y) * IMG_WIDTH + dstX + x] =
+                fb[(dstY + y) * LCD_WIDTH + dstX + x] =
                     sprite[y * w + x];
             }
         }
     }
 }
 
-void lcd_draw(uint16_t *framebuffer,int IMG_WIDTH, int IMG_HEIGHT){
+void lcd_draw(uint16_t *framebuffer,int LCD_WIDTH, int LCD_HEIGHT){
         ESP_ERROR_CHECK(
             esp_lcd_panel_draw_bitmap(
                 panel_handle,
                 0,
                 0,
-                IMG_WIDTH,
-                IMG_HEIGHT,
+                LCD_WIDTH,
+                LCD_HEIGHT,
                 framebuffer
             )
         );
 }
 
 void init_lcd_vars(
-	int IMG_WIDTH,
-	int IMG_HEIGHT,
+	int LCD_WIDTH,
+	int LCD_HEIGHT,
     uint16_t *x_pos,
     uint16_t *y_pos,
     uint16_t *framebuffer_index,
@@ -83,10 +83,10 @@ void init_lcd_vars(
     *framebuffer_index = 0;
 
     *x_min = 0;
-    *x_max = IMG_WIDTH - AMIGABALLMASK48X48_WIDTH;
+    *x_max = LCD_WIDTH - AMIGABALLMASK48X48_WIDTH;
 
     *y_min = 0;
-    *y_max = IMG_HEIGHT - AMIGABALLMASK48X48_HEIGHT;
+    *y_max = LCD_HEIGHT - AMIGABALLMASK48X48_HEIGHT;
 
     *x_center = round(*x_max / 2.0f);
     *y_center = round(*y_max / 2.0f);

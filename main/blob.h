@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "esp_random.h"
 
 /**
  * @brief Sélection spéciale : choisir une formule aléatoire.
